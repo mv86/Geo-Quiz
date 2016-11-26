@@ -1,6 +1,7 @@
 package com.bignerdranch.android.geoquiz;
 
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -14,7 +15,8 @@ import android.widget.Toast;
 public class QuizActivity extends AppCompatActivity {
 
     private Button mTrueButton;
-    private Button mFalseButoon;
+    private Button mFalseButton;
+    private Button mPrevButton;
     private Button mNextButton;
     private TextView mQuestionTextView;
 
@@ -53,6 +55,13 @@ public class QuizActivity extends AppCompatActivity {
         setContentView(R.layout.activity_quiz);
 
         mQuestionTextView = (TextView) findViewById(R.id.question_text_view);
+        mQuestionTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
+                updateQuestion();
+            }
+        });
 
         mTrueButton = (Button) findViewById(R.id.true_button);
 
@@ -64,13 +73,28 @@ public class QuizActivity extends AppCompatActivity {
             }
         });
 
-        mFalseButoon = (Button) findViewById(R.id.false_button);
+        mFalseButton = (Button) findViewById(R.id.false_button);
 
-        mFalseButoon.setOnClickListener(new View.OnClickListener() {
+        mFalseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 checkAnswer(false);
             }
+        });
+
+        mPrevButton = (Button) findViewById(R.id.prev_button);
+        mPrevButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mCurrentIndex != 0) {
+                    mCurrentIndex = (mCurrentIndex - 1) % mQuestionBank.length;
+                    updateQuestion();
+                } else {
+                    Toast.makeText(QuizActivity.this, R.string.first_question,
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+
         });
 
         mNextButton = (Button) findViewById(R.id.next_button);
